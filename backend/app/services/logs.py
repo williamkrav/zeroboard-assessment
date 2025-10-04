@@ -1,9 +1,9 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import and_
-from typing import List, Optional
+from sqlalchemy import and_, func, extract
+from typing import List, Optional, Dict
 from datetime import datetime
 from ..models import Log
-from ..schemas import LogCreate, LogUpdate, LogSearch
+from ..schemas import LogCreate, LogUpdate, LogSearch, LogAggregation, LogStats
 
 class LogService:
     @staticmethod
@@ -68,3 +68,45 @@ class LogService:
             query = query.filter(and_(*filters))
         
         return query.offset(search_params.skip).limit(search_params.limit).all()
+    
+    @staticmethod
+    def get_log_stats(db: Session, aggregation_params: LogAggregation) -> LogStats:
+        query = db.query(Log)
+        
+        filters = []
+        
+        if aggregation_params.start_date:
+            filters.append(Log.timestamp >= aggregation_params.start_date)
+        
+        if aggregation_params.end_date:
+            filters.append(Log.timestamp <= aggregation_params.end_date)
+        
+        if aggregation_params.level:
+            filters.append(Log.level == aggregation_params.level)
+        
+        if aggregation_params.source:
+            filters.append(Log.source == aggregation_params.source)
+        
+        if filters:
+            query = query.filter(and_(*filters))
+        
+        total_logs = query.count()
+        
+        level_counts = db.query(Log.level, func.count(Log.id)).group_by(Log.level).all()
+        level_counts = {level: count for level, count in level_counts}
+        
+        source_counts = db.query(Log.source, func.count(Log.id)).group_by(Log.source).all()
+        source_counts = {source: count for source, count in source_counts if source}
+        
+        hourly_distribution = db.query(
+            extract('hour', Log.timestamp).label('hour'),
+            func.count(Log.id).label('count')
+        ).group_by('hour').all()
+        hourly_distribution = {int(hour): count for hour, count in hourly_distribution}
+        
+        return LogStats(
+            total_logs=total_logs,
+            level_counts=level_counts,
+            source_counts=source_counts,
+            hourly_distribution=hourly_distribution
+        )

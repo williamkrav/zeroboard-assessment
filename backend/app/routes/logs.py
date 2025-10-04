@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from ..database import get_db
 from ..models import Log
-from ..schemas import LogCreate, Log as LogSchema, LogUpdate, APIResponse, LogSearch
+from ..schemas import LogCreate, Log as LogSchema, LogUpdate, APIResponse, LogSearch, LogAggregation
 from ..services.logs import LogService
 
 router = APIRouter()
@@ -44,7 +44,7 @@ def get_logs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
             message="Failed to retrieve logs"
         )
 
-@router.get("/search", response_model=APIResponse)
+@router.get("/search/simple", response_model=APIResponse)
 def search_logs(
     start_date: Optional[str] = None,
     end_date: Optional[str] = None,
@@ -79,6 +79,41 @@ def search_logs(
             code=500,
             error=str(e),
             message="Failed to search logs"
+        )
+
+@router.get("/search/aggregate", response_model=APIResponse)
+def get_log_stats(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    level: Optional[str] = None,
+    source: Optional[str] = None,
+    group_by: str = "level",
+    db: Session = Depends(get_db)
+):
+    try:
+        from datetime import datetime
+        
+        aggregation_params = LogAggregation(
+            start_date=datetime.fromisoformat(start_date) if start_date else None,
+            end_date=datetime.fromisoformat(end_date) if end_date else None,
+            level=level,
+            source=source,
+            group_by=group_by
+        )
+        
+        stats = LogService.get_log_stats(db, aggregation_params)
+        return APIResponse(
+            data=stats,
+            code=200,
+            error=None,
+            message="Log statistics retrieved successfully"
+        )
+    except Exception as e:
+        return APIResponse(
+            data=None,
+            code=500,
+            error=str(e),
+            message="Failed to retrieve log statistics"
         )
 
 @router.get("/{log_id}", response_model=APIResponse)
