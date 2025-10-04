@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { Card, Button, Spin, Alert, Form, Input, Select } from 'antd';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { Card, Button, Spin, Alert, Form, Input, Select, Modal } from 'antd';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import config from '../config';
@@ -15,7 +15,10 @@ const LogDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLog = async () => {
@@ -53,6 +56,23 @@ const LogDetail = () => {
     }
   };
 
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    try {
+      setDeleteLoading(true);
+      await axios.delete(`${config.API_URL}/api/logs/${id}`);
+      navigate('/');
+    } catch (error) {
+      console.error('Error deleting log:', error);
+    } finally {
+      setDeleteLoading(false);
+      setShowDeleteModal(false);
+    }
+  };
+
   if (loading) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
@@ -86,9 +106,19 @@ const LogDetail = () => {
   return (
     <div style={{ padding: '20px' }}>
       <Card title="Log Details" extra={
-        <Button>
-          <Link to="/">Back to Home</Link>
-        </Button>
+        <div>
+          <Button
+            danger
+            loading={deleteLoading}
+            onClick={handleDelete}
+            style={{ marginRight: '8px' }}
+          >
+            Delete
+          </Button>
+          <Button>
+            <Link to="/">Back to Home</Link>
+          </Button>
+        </div>
       }>
         <div style={{ marginBottom: '16px' }}>
           <strong>ID:</strong> {log.id}
@@ -158,6 +188,18 @@ const LogDetail = () => {
           </Form.Item>
         </Form>
       </Card>
+
+      <Modal
+        title="Delete Log"
+        open={showDeleteModal}
+        onOk={confirmDelete}
+        onCancel={() => setShowDeleteModal(false)}
+        okText="Delete"
+        cancelText="Cancel"
+        okButtonProps={{ danger: true, loading: deleteLoading }}
+      >
+        <p>Are you sure you want to delete this log?</p>
+      </Modal>
     </div>
   );
 };
