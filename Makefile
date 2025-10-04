@@ -1,4 +1,8 @@
-.PHONY: install run run-frontend migrate-up migrate-down db-start db-stop lint format check setup-hooks
+.PHONY: setup-versions install run run-frontend migrate-up migrate-down db-start db-stop lint format check setup-hooks
+
+setup-versions:
+	cd backend && pyenv local
+	cd frontend && nvm use
 
 install:
 	cd backend && pip install -r requirements.txt

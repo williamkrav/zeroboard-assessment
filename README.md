@@ -1,5 +1,10 @@
 # Logs Dashboard
 
+
+## Requirements
+- Python 3.12.0
+- Node.js 22.14.0
+- Docker (for PostgreSQL)
 A simple web application for managing and analyzing logs with FastAPI backend and React frontend.
 
 ## What is this?
@@ -11,6 +16,9 @@ A simple web application for managing and analyzing logs with FastAPI backend an
 ## How to run
 
 ```bash
+# Setup verseion
+make setup-versions
+
 # Install dependencies
 make install
 
@@ -29,6 +37,7 @@ make run-frontend
 
 ## Important commands
 
+- `make setup-versions` - Set correct Python and Node versions
 - `make install` - Install Python and Node dependencies
 - `make db-start` - Start PostgreSQL with Docker
 - `make migrate-up` - Run database migrations
