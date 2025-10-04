@@ -112,6 +112,19 @@ const Home = () => {
       width: 180,
       render: (timestamp) => dayjs(timestamp).format('YYYY-MM-DD HH:mm:ss'),
     },
+    {
+      title: 'Actions',
+      key: 'actions',
+      width: 120,
+      render: (_, record) => (
+        <Button
+          type="link"
+          onClick={() => navigate(`/logs/${record.id}`)}
+        >
+          View Details
+        </Button>
+      ),
+    },
   ];
 
   return (
