@@ -33,7 +33,7 @@ const CreateLogs = () => {
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
-          initialValues={{ timestamp: dayjs() }}
+          initialValues={{ level: 'INFO', timestamp: dayjs() }}
         >
           <Form.Item label="Level" name="level">
             <Select defaultValue="INFO">
