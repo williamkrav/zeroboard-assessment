@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import axios from 'axios';
 
 const Home = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLogs = async () => {
@@ -35,7 +36,7 @@ const Home = () => {
   }, []);
 
   const handleCreateLog = () => {
-    console.log('Create new log clicked');
+    navigate('/create-logs');
   };
 
   return (
