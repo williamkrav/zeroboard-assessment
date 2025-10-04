@@ -31,3 +31,4 @@ class APIResponse(BaseModel):
     code: int
     error: Optional[str] = None
     message: str
+

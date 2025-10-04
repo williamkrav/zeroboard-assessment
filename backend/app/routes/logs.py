@@ -4,16 +4,14 @@ from typing import List, Optional
 from ..database import get_db
 from ..models import Log
 from ..schemas import LogCreate, Log as LogSchema, LogUpdate, APIResponse
+from ..services.logs import LogService
 
 router = APIRouter()
 
 @router.post("/", response_model=APIResponse)
 def create_log(log: LogCreate, db: Session = Depends(get_db)):
     try:
-        db_log = Log(**log.dict())
-        db.add(db_log)
-        db.commit()
-        db.refresh(db_log)
+        db_log = LogService.create_log(db, log)
         return APIResponse(
             data=db_log,
             code=201,
@@ -31,7 +29,7 @@ def create_log(log: LogCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=APIResponse)
 def get_logs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     try:
-        logs = db.query(Log).offset(skip).limit(limit).all()
+        logs = LogService.get_logs(db, skip, limit)
         return APIResponse(
             data=logs,
             code=200,
@@ -49,7 +47,7 @@ def get_logs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 @router.get("/{log_id}", response_model=APIResponse)
 def get_log(log_id: int, db: Session = Depends(get_db)):
     try:
-        log = db.query(Log).filter(Log.id == log_id).first()
+        log = LogService.get_log_by_id(db, log_id)
         if log is None:
             return APIResponse(
                 data=None,
@@ -74,7 +72,7 @@ def get_log(log_id: int, db: Session = Depends(get_db)):
 @router.put("/{log_id}", response_model=APIResponse)
 def update_log(log_id: int, log_update: LogUpdate, db: Session = Depends(get_db)):
     try:
-        log = db.query(Log).filter(Log.id == log_id).first()
+        log = LogService.update_log(db, log_id, log_update)
         if log is None:
             return APIResponse(
                 data=None,
@@ -82,13 +80,6 @@ def update_log(log_id: int, log_update: LogUpdate, db: Session = Depends(get_db)
                 error="Log not found",
                 message=f"Log with ID {log_id} not found"
             )
-        
-        update_data = log_update.dict(exclude_unset=True)
-        for field, value in update_data.items():
-            setattr(log, field, value)
-        
-        db.commit()
-        db.refresh(log)
         return APIResponse(
             data=log,
             code=200,
@@ -106,17 +97,14 @@ def update_log(log_id: int, log_update: LogUpdate, db: Session = Depends(get_db)
 @router.delete("/{log_id}", response_model=APIResponse)
 def delete_log(log_id: int, db: Session = Depends(get_db)):
     try:
-        log = db.query(Log).filter(Log.id == log_id).first()
-        if log is None:
+        success = LogService.delete_log(db, log_id)
+        if not success:
             return APIResponse(
                 data=None,
                 code=404,
                 error="Log not found",
                 message=f"Log with ID {log_id} not found"
             )
-        
-        db.delete(log)
-        db.commit()
         return APIResponse(
             data=None,
             code=200,
