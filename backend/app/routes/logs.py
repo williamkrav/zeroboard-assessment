@@ -49,6 +49,7 @@ def search_logs(
     end_date: Optional[str] = None,
     level: Optional[str] = None,
     source: Optional[str] = None,
+    text: Optional[str] = None,
     skip: int = 0,
     limit: int = 100,
     db: Session = Depends(get_db),
@@ -61,6 +62,7 @@ def search_logs(
             end_date=datetime.fromisoformat(end_date) if end_date else None,
             level=level,
             source=source,
+            text=text,
             skip=skip,
             limit=limit,
         )

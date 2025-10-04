@@ -4,6 +4,7 @@ import { Form, Input, Select, DatePicker, Button, Card } from 'antd';
 import axios from 'axios';
 import dayjs from 'dayjs';
 import config from '../config';
+import { LOG_LEVEL_OPTIONS, LOG_SOURCE_OPTIONS, LOG_LEVELS, LOG_SOURCES } from '../constants';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -33,14 +34,19 @@ const CreateLogs = () => {
           form={form}
           layout="vertical"
           onFinish={handleSubmit}
-          initialValues={{ level: 'INFO', timestamp: dayjs() }}
+          initialValues={{
+            level: LOG_LEVELS.INFO,
+            timestamp: dayjs(),
+            source: LOG_SOURCES.USER_SERVICE,
+          }}
         >
           <Form.Item label="Level" name="level">
-            <Select defaultValue="INFO">
-              <Option value="INFO">INFO</Option>
-              <Option value="WARNING">WARNING</Option>
-              <Option value="ERROR">ERROR</Option>
-              <Option value="DEBUG">DEBUG</Option>
+            <Select defaultValue={LOG_LEVELS.INFO}>
+              {LOG_LEVEL_OPTIONS.map((option) => (
+                <Option key={option.value} value={option.value}>
+                  {option.label}
+                </Option>
+              ))}
             </Select>
           </Form.Item>
 
@@ -52,12 +58,14 @@ const CreateLogs = () => {
             <TextArea rows={4} />
           </Form.Item>
 
-          <Form.Item
-            label="Source"
-            name="source"
-            rules={[{ required: true, message: 'Please enter log source' }]}
-          >
-            <Input />
+          <Form.Item label="Source" name="source">
+            <Select defaultValue={LOG_SOURCES.USER_SERVICE}>
+              {LOG_SOURCE_OPTIONS.map((option) => (
+                <Option key={option.value} value={option.value}>
+                  {option.label}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item
