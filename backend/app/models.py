@@ -10,7 +10,5 @@ class Log(Base):
     level = Column(String(10), nullable=False, index=True)
     message = Column(Text, nullable=False)
     source = Column(String(50), index=True)
-    user_id = Column(String(50), index=True)
     endpoint = Column(String(100))
-    response_time = Column(Integer)
     ip_address = Column(String(45))
