@@ -2,7 +2,9 @@
 
 setup-versions:
 	cd backend && pyenv local
-	cd frontend && nvm use
+
+setup-versions-frontend:
+	cd frontend && source ~/.nvm/nvm.sh && nvm use
 
 install:
 	cd backend && pip install -r requirements.txt

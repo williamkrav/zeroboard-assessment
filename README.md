@@ -16,8 +16,11 @@ A simple web application for managing and analyzing logs with FastAPI backend an
 ## How to run
 
 ```bash
-# Setup verseion
+# Setup version backend
 make setup-versions
+
+# Setup version frontend
+make setup-versions-frontend
 
 # Install dependencies
 make install
