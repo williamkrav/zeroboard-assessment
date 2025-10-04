@@ -150,7 +150,6 @@ const Home = () => {
           onFinish={handleSearch}
           initialValues={{
             dateRange: [dayjs().subtract(1, 'day'), dayjs()],
-            level: LOG_LEVELS.INFO,
           }}
         >
           <Row gutter={16}>
@@ -166,6 +165,9 @@ const Home = () => {
             <Col span={4}>
               <Form.Item label="Level" name="level">
                 <Select allowClear>
+                  <Option key="all" value="">
+                    ALL
+                  </Option>
                   {LOG_LEVEL_OPTIONS.map(option => (
                     <Option key={option.value} value={option.value}>
                       {option.label}
@@ -177,6 +179,9 @@ const Home = () => {
             <Col span={4}>
               <Form.Item label="Source" name="source">
                 <Select allowClear>
+                  <Option key="all" value="">
+                    ALL
+                  </Option>
                   {LOG_SOURCE_OPTIONS.map(option => (
                     <Option key={option.value} value={option.value}>
                       {option.label}
