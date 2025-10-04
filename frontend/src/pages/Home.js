@@ -15,6 +15,7 @@ const Home = () => {
   const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+  const [sortOrder, setSortOrder] = useState('desc');
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
@@ -25,6 +26,8 @@ const Home = () => {
       const queryParams = {
         skip: (currentPage - 1) * pageSize,
         limit: pageSize,
+        sort_by: 'timestamp',
+        sort_order: sortOrder,
         ...formValues,
         ...params,
       };
@@ -65,6 +68,7 @@ const Home = () => {
   const handleReset = () => {
     form.resetFields();
     setCurrentPage(1);
+    setSortOrder('desc');
     fetchLogs();
   };
 
@@ -74,12 +78,6 @@ const Home = () => {
   };
 
   const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
-      width: 80,
-    },
     {
       title: 'Level',
       dataIndex: 'level',
@@ -165,7 +163,7 @@ const Home = () => {
             </Col>
             <Col span={4}>
               <Form.Item label="Source" name="source">
-                <Select allowClear defaultValue={LOG_SOURCES.USER_SERVICE}>
+                <Select allowClear>
                   {LOG_SOURCE_OPTIONS.map(option => (
                     <Option key={option.value} value={option.value}>
                       {option.label}
@@ -177,6 +175,14 @@ const Home = () => {
             <Col span={6}>
               <Form.Item label="Message Text" name="text">
                 <Input allowClear placeholder="Search in message..." />
+              </Form.Item>
+            </Col>
+            <Col span={4}>
+              <Form.Item label="Sort Order">
+                <Select value={sortOrder} onChange={setSortOrder}>
+                  <Option value="desc">Newest First</Option>
+                  <Option value="asc">Oldest First</Option>
+                </Select>
               </Form.Item>
             </Col>
             <Col span={4}>

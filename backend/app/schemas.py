@@ -43,6 +43,8 @@ class LogSearch(BaseModel):
     text: Optional[str] = None
     skip: int = 0
     limit: int = 100
+    sort_by: str = "timestamp"
+    sort_order: str = "desc"
 
 
 class LogAggregation(BaseModel):

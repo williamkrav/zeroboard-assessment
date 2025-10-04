@@ -52,6 +52,8 @@ def search_logs(
     text: Optional[str] = None,
     skip: int = 0,
     limit: int = 100,
+    sort_by: str = "timestamp",
+    sort_order: str = "desc",
     db: Session = Depends(get_db),
 ):
     try:
@@ -65,6 +67,8 @@ def search_logs(
             text=text,
             skip=skip,
             limit=limit,
+            sort_by=sort_by,
+            sort_order=sort_order,
         )
 
         logs = LogService.search_logs(db, search_params)

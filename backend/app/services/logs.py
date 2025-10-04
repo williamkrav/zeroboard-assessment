@@ -72,6 +72,12 @@ class LogService:
         if filters:
             query = query.filter(and_(*filters))
 
+        order_by_field = getattr(Log, search_params.sort_by, Log.timestamp)
+        if search_params.sort_order == "desc":
+            query = query.order_by(order_by_field.desc())
+        else:
+            query = query.order_by(order_by_field.asc())
+
         return query.offset(search_params.skip).limit(search_params.limit).all()
 
     @staticmethod
