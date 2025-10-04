@@ -1,4 +1,4 @@
-.PHONY: install run migrate-up migrate-down db-start db-stop
+.PHONY: install run migrate-up migrate-down db-start db-stop lint format check setup-hooks
 
 install:
 	cd backend && pip install -r requirements.txt
@@ -17,3 +17,17 @@ db-start:
 
 db-stop:
 	docker-compose down
+
+lint:
+	cd backend && flake8 .
+	cd backend && pylint app/
+
+format:
+	cd backend && black .
+	cd backend && isort .
+
+check:
+	cd backend && mypy app/
+
+setup-hooks:
+	pre-commit install
