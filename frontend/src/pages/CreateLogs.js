@@ -61,22 +61,6 @@ const CreateLogs = () => {
           </Form.Item>
 
           <Form.Item
-            label="Endpoint"
-            name="endpoint"
-            rules={[{ required: true, message: 'Please enter log endpoint' }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
-            label="IP Address"
-            name="ip_address"
-            rules={[{ required: true, message: 'Please enter log IP address' }]}
-          >
-            <Input />
-          </Form.Item>
-
-          <Form.Item
             label="Timestamp"
             name="timestamp"
             rules={[{ required: true, message: 'Please enter log timestamp' }]}
