@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import axios from 'axios';
+import config from '../config';
 
 const Home = () => {
   const [logs, setLogs] = useState([]);
@@ -12,7 +13,7 @@ const Home = () => {
     const fetchLogs = async () => {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/logs/search/simple`,
+          `${config.API_URL}/api/logs/search/simple`,
           {
             params: {
               start_date: '2024-01-01T00:00:00',
