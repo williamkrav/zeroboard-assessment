@@ -1,10 +1,14 @@
-.PHONY: install run migrate-up migrate-down db-start db-stop lint format check setup-hooks
+.PHONY: install run run-frontend migrate-up migrate-down db-start db-stop lint format check setup-hooks
 
 install:
 	cd backend && pip install -r requirements.txt
+	cd frontend && npm install
 
 run:
 	cd backend && uvicorn main:app --reload --host 0.0.0.0 --port 8000
+
+run-frontend:
+	cd frontend && npm start
 
 migrate-up:
 	cd backend && alembic upgrade head
