@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Any
 
 class LogBase(BaseModel):
     level: str
@@ -25,3 +25,9 @@ class LogUpdate(BaseModel):
     source: Optional[str] = None
     endpoint: Optional[str] = None
     ip_address: Optional[str] = None
+
+class APIResponse(BaseModel):
+    data: Optional[Any] = None
+    code: int
+    error: Optional[str] = None
+    message: str
