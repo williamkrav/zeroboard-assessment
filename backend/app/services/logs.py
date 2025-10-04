@@ -1,7 +1,9 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import and_
 from typing import List, Optional
+from datetime import datetime
 from ..models import Log
-from ..schemas import LogCreate, LogUpdate
+from ..schemas import LogCreate, LogUpdate, LogSearch
 
 class LogService:
     @staticmethod
@@ -43,3 +45,26 @@ class LogService:
         db.delete(log)
         db.commit()
         return True
+    
+    @staticmethod
+    def search_logs(db: Session, search_params: LogSearch) -> List[Log]:
+        query = db.query(Log)
+        
+        filters = []
+        
+        if search_params.start_date:
+            filters.append(Log.timestamp >= search_params.start_date)
+        
+        if search_params.end_date:
+            filters.append(Log.timestamp <= search_params.end_date)
+        
+        if search_params.level:
+            filters.append(Log.level == search_params.level)
+        
+        if search_params.source:
+            filters.append(Log.source == search_params.source)
+        
+        if filters:
+            query = query.filter(and_(*filters))
+        
+        return query.offset(search_params.skip).limit(search_params.limit).all()

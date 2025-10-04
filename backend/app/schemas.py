@@ -32,3 +32,11 @@ class APIResponse(BaseModel):
     error: Optional[str] = None
     message: str
 
+class LogSearch(BaseModel):
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    level: Optional[str] = None
+    source: Optional[str] = None
+    skip: int = 0
+    limit: int = 100
+

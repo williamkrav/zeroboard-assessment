@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 from ..database import get_db
 from ..models import Log
-from ..schemas import LogCreate, Log as LogSchema, LogUpdate, APIResponse
+from ..schemas import LogCreate, Log as LogSchema, LogUpdate, APIResponse, LogSearch
 from ..services.logs import LogService
 
 router = APIRouter()
@@ -42,6 +42,43 @@ def get_logs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
             code=500,
             error=str(e),
             message="Failed to retrieve logs"
+        )
+
+@router.get("/search", response_model=APIResponse)
+def search_logs(
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    level: Optional[str] = None,
+    source: Optional[str] = None,
+    skip: int = 0,
+    limit: int = 100,
+    db: Session = Depends(get_db)
+):
+    try:
+        from datetime import datetime
+        
+        search_params = LogSearch(
+            start_date=datetime.fromisoformat(start_date) if start_date else None,
+            end_date=datetime.fromisoformat(end_date) if end_date else None,
+            level=level,
+            source=source,
+            skip=skip,
+            limit=limit
+        )
+        
+        logs = LogService.search_logs(db, search_params)
+        return APIResponse(
+            data=logs,
+            code=200,
+            error=None,
+            message="Logs search completed successfully"
+        )
+    except Exception as e:
+        return APIResponse(
+            data=None,
+            code=500,
+            error=str(e),
+            message="Failed to search logs"
         )
 
 @router.get("/{log_id}", response_model=APIResponse)
