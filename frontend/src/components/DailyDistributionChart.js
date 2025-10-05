@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Progress } from 'antd';
+import { Card } from 'antd';
+import { Column } from '@ant-design/plots';
 
 const DailyDistributionChart = ({ data }) => {
   if (!data || Object.keys(data).length === 0) {
@@ -10,23 +11,22 @@ const DailyDistributionChart = ({ data }) => {
     );
   }
 
-  const maxCount = Math.max(...Object.values(data));
+  const chartData = Object.entries(data)
+    .sort((a, b) => new Date(a[0]) - new Date(b[0]))
+    .map(([date, count]) => ({
+      date,
+      count,
+    }));
+
+  const config = {
+    data: chartData,
+    xField: 'date',
+    yField: 'count',
+  };
 
   return (
     <Card title="Daily Distribution">
-      {Object.entries(data)
-        .sort((a, b) => new Date(a[0]) - new Date(b[0]))
-        .map(([date, count]) => {
-          const percent = maxCount > 0 ? (count / maxCount) * 100 : 0;
-          return (
-            <div key={date} style={{ marginBottom: '12px' }}>
-              <div style={{ marginBottom: '4px' }}>
-                <strong>{date}</strong>: {count} logs
-              </div>
-              <Progress percent={Math.round(percent)} showInfo={false} />
-            </div>
-          );
-        })}
+      <Column {...config} />
     </Card>
   );
 };
