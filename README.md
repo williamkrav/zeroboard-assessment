@@ -37,8 +37,15 @@ make run
 # Start React frontend
 make run-frontend
 ```
+
 ## API docs
 API documentation can be found in the postman collection to make it easier for testing the API
+
+## Test
+```bash
+# Run backend test
+make test
+```
 
 ## Important commands
 

@@ -45,3 +45,8 @@ Thumbs.db
 *.log
 yarn.lock
 package-lock.json
+
+# Testing
+.coverage
+.pytest_cache/
+htmlcov/
