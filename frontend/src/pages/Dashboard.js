@@ -7,6 +7,7 @@ import config from '../config';
 import { LOG_LEVEL_OPTIONS, LOG_SOURCE_OPTIONS } from '../constants';
 import DailyDistributionChart from '../components/DailyDistributionChart';
 import LogStatistics from '../components/LogStatistics';
+import LogLevelDonutChart from '../components/LogLevelDonutChart';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -148,6 +149,7 @@ const Dashboard = () => {
       {stats && !loading && (
         <>
           <LogStatistics stats={stats} />
+          <LogLevelDonutChart data={stats.level_counts} />
           <DailyDistributionChart data={stats.daily_distribution} />
         </>
       )}

@@ -5,7 +5,7 @@ import { Column } from '@ant-design/plots';
 const DailyDistributionChart = ({ data }) => {
   if (!data || Object.keys(data).length === 0) {
     return (
-      <Card title="Daily Distribution">
+      <Card title="Daily Distribution Histogram">
         <p>No data available</p>
       </Card>
     );
@@ -25,7 +25,7 @@ const DailyDistributionChart = ({ data }) => {
   };
 
   return (
-    <Card title="Daily Distribution">
+    <Card title="Daily Distribution Histogram">
       <Column {...config} />
     </Card>
   );
