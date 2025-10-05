@@ -12,9 +12,11 @@ const { RangePicker } = DatePicker;
 const Home = () => {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [total, setTotal] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    page_size: 10,
+    total_pages: 0,
+  });
   const [sortOrder, setSortOrder] = useState('desc');
   const [form] = Form.useForm();
   const navigate = useNavigate();
@@ -24,8 +26,8 @@ const Home = () => {
       setLoading(true);
       const formValues = form.getFieldsValue();
       const queryParams = {
-        skip: (currentPage - 1) * pageSize,
-        limit: pageSize,
+        skip: (pagination.page - 1) * pagination.page_size,
+        limit: pagination.page_size,
         sort_by: 'timestamp',
         sort_order: sortOrder,
         ...formValues,
@@ -44,7 +46,9 @@ const Home = () => {
       );
 
       setLogs(response.data.data);
-      setTotal(response.data.data.length);
+      if (response.data.pagination) {
+        setPagination(response.data.pagination);
+      }
       setLoading(false);
     } catch (error) {
       console.error('Error fetching logs:', error);
@@ -54,27 +58,30 @@ const Home = () => {
 
   useEffect(() => {
     fetchLogs();
-  }, [currentPage, pageSize]);
+  }, [pagination.page, pagination.page_size]);
 
   const handleCreateLog = () => {
     navigate('/create-logs');
   };
 
   const handleSearch = () => {
-    setCurrentPage(1);
+    setPagination({ ...pagination, page: 1 });
     fetchLogs();
   };
 
   const handleReset = () => {
     form.resetFields();
-    setCurrentPage(1);
+    setPagination({ ...pagination, page: 1 });
     setSortOrder('desc');
     fetchLogs();
   };
 
-  const handleTableChange = (pagination) => {
-    setCurrentPage(pagination.current);
-    setPageSize(pagination.pageSize);
+  const handleTableChange = (tablePagination) => {
+    setPagination({
+      page: tablePagination.current,
+      page_size: tablePagination.pageSize,
+      total_pages: pagination.total_pages,
+    });
   };
 
   const handleDownloadCSV = () => {
@@ -257,13 +264,11 @@ const Home = () => {
           loading={loading}
           rowKey="id"
           pagination={{
-            current: currentPage,
-            pageSize: pageSize,
-            total: total,
+            current: pagination.page,
+            pageSize: pagination.page_size,
+            total: pagination.total_pages * pagination.page_size,
             showSizeChanger: true,
             showQuickJumper: true,
-            showTotal: (total, range) =>
-              `${range[0]}-${range[1]} of ${total} logs`,
             pageSizeOptions: ['10', '20', '50', '100'],
           }}
           onChange={handleTableChange}

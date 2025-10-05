@@ -49,7 +49,7 @@ class LogService:
         return True
 
     @staticmethod
-    def search_logs(db: Session, search_params: LogSearch) -> List[Log]:
+    def search_logs(db: Session, search_params: LogSearch):
         query = db.query(Log)
 
         filters = []
@@ -72,13 +72,17 @@ class LogService:
         if filters:
             query = query.filter(and_(*filters))
 
+        total = query.count()
+
         order_by_field = getattr(Log, search_params.sort_by, Log.timestamp)
         if search_params.sort_order == "desc":
             query = query.order_by(order_by_field.desc())
         else:
             query = query.order_by(order_by_field.asc())
 
-        return query.offset(search_params.skip).limit(search_params.limit).all()
+        logs = query.offset(search_params.skip).limit(search_params.limit).all()
+
+        return logs, total
 
     @staticmethod
     def get_log_stats(db: Session, aggregation_params: LogAggregation) -> LogStats:

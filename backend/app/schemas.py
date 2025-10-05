@@ -28,11 +28,18 @@ class LogUpdate(BaseModel):
     source: Optional[str] = None
 
 
+class PaginationMeta(BaseModel):
+    page: int
+    page_size: int
+    total_pages: int
+
+
 class APIResponse(BaseModel):
     data: Optional[Any] = None
     code: int
     error: Optional[str] = None
     message: str
+    pagination: Optional[PaginationMeta] = None
 
 
 class LogSearch(BaseModel):

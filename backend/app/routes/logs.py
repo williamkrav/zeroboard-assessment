@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from ..database import get_db
 from ..schemas import APIResponse
 from ..schemas import Log as LogSchema
-from ..schemas import LogAggregation, LogCreate, LogSearch, LogUpdate
+from ..schemas import LogAggregation, LogCreate, LogSearch, LogUpdate, PaginationMeta
 from ..services.logs import LogService
 
 router = APIRouter()
@@ -27,7 +27,7 @@ def create_log(log: LogCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=APIResponse)
-def get_logs(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+def get_logs(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     try:
         logs = LogService.get_logs(db, skip, limit)
         logs_schema = [LogSchema.model_validate(log) for log in logs]
@@ -51,7 +51,7 @@ def search_logs(
     source: Optional[str] = None,
     text: Optional[str] = None,
     skip: int = 0,
-    limit: int = 100,
+    limit: int = 10,
     sort_by: str = "timestamp",
     sort_order: str = "desc",
     db: Session = Depends(get_db),
@@ -71,13 +71,24 @@ def search_logs(
             sort_order=sort_order,
         )
 
-        logs = LogService.search_logs(db, search_params)
+        logs, total = LogService.search_logs(db, search_params)
         logs_schema = [LogSchema.model_validate(log) for log in logs]
+
+        page = (skip // limit) + 1 if limit > 0 else 1
+        total_pages = (total + limit - 1) // limit if limit > 0 else 1
+
+        pagination = PaginationMeta(
+            page=page,
+            page_size=limit,
+            total_pages=total_pages,
+        )
+
         return APIResponse(
             data=logs_schema,
             code=200,
             error=None,
             message="Logs search completed successfully",
+            pagination=pagination,
         )
     except Exception as e:
         return APIResponse(
