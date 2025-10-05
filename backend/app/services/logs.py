@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from sqlalchemy import and_, extract, func
+from sqlalchemy import and_, func
 from sqlalchemy.orm import Session
 
 from ..models import Log
@@ -111,19 +111,8 @@ class LogService:
         )
         source_counts = {source: count for source, count in source_counts if source}
 
-        hourly_distribution = (
-            db.query(
-                extract("hour", Log.timestamp).label("hour"),
-                func.count(Log.id).label("count"),
-            )
-            .group_by("hour")
-            .all()
-        )
-        hourly_distribution = {int(hour): count for hour, count in hourly_distribution}
-
         return LogStats(
             total_logs=total_logs,
             level_counts=level_counts,
             source_counts=source_counts,
-            hourly_distribution=hourly_distribution,
         )

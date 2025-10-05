@@ -138,9 +138,17 @@ const Home = () => {
         }}
       >
         <h1 style={{ margin: 0 }}>Logs Dashboard</h1>
-        <Button type="primary" onClick={handleCreateLog}>
-          Create New Log
-        </Button>
+        <div>
+          <Button
+            onClick={() => navigate('/dashboard')}
+            style={{ marginRight: '10px' }}
+          >
+            Go to Dashboard
+          </Button>
+          <Button type="primary" onClick={handleCreateLog}>
+            Create New Log
+          </Button>
+        </div>
       </div>
 
       <Card title="Search Filters" style={{ marginBottom: '20px' }}>
