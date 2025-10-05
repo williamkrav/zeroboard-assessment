@@ -5,6 +5,8 @@ import axios from 'axios';
 import dayjs from 'dayjs';
 import config from '../config';
 import { LOG_LEVEL_OPTIONS, LOG_SOURCE_OPTIONS } from '../constants';
+import DailyDistributionChart from '../components/DailyDistributionChart';
+import LogStatistics from '../components/LogStatistics';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -144,29 +146,10 @@ const Dashboard = () => {
       )}
 
       {stats && !loading && (
-        <Card title="Log Statistics">
-          <div style={{ marginBottom: '20px' }}>
-            <strong>Total Logs:</strong> {stats.total_logs}
-          </div>
-
-          <div style={{ marginBottom: '20px' }}>
-            <strong>Logs by Level:</strong>
-            {Object.entries(stats.level_counts).map(([level, count]) => (
-              <div key={level} style={{ marginBottom: '8px', marginLeft: '16px' }}>
-                {level}: {count}
-              </div>
-            ))}
-          </div>
-
-          <div>
-            <strong>Logs by Source:</strong>
-            {Object.entries(stats.source_counts).map(([source, count]) => (
-              <div key={source} style={{ marginBottom: '8px', marginLeft: '16px' }}>
-                {source}: {count}
-              </div>
-            ))}
-          </div>
-        </Card>
+        <>
+          <LogStatistics stats={stats} />
+          <DailyDistributionChart data={stats.daily_distribution} />
+        </>
       )}
     </div>
   );
