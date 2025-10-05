@@ -1,3 +1,4 @@
+import logging
 from typing import Optional
 
 from fastapi import APIRouter, Depends
@@ -9,6 +10,7 @@ from ..schemas import Log as LogSchema
 from ..schemas import LogAggregation, LogCreate, LogSearch, LogUpdate, PaginationMeta
 from ..services.logs import LogService
 
+logger = logging.getLogger(__name__)
 router = APIRouter()
 
 
@@ -17,10 +19,12 @@ def create_log(log: LogCreate, db: Session = Depends(get_db)):
     try:
         db_log = LogService.create_log(db, log)
         log_schema = LogSchema.model_validate(db_log)
+        logger.info(f"Log created with ID: {db_log.id}")
         return APIResponse(
             data=log_schema, code=201, error=None, message="Log created successfully"
         )
     except Exception as e:
+        logger.error(f"Failed to create log: {str(e)}")
         return APIResponse(
             data=None, code=500, error=str(e), message="Failed to create log"
         )
@@ -83,6 +87,7 @@ def search_logs(
             total_pages=total_pages,
         )
 
+        logger.info(f"Search logs: found {total} results")
         return APIResponse(
             data=logs_schema,
             code=200,
@@ -91,6 +96,7 @@ def search_logs(
             pagination=pagination,
         )
     except Exception as e:
+        logger.error(f"Failed to search logs: {str(e)}")
         return APIResponse(
             data=None, code=500, error=str(e), message="Failed to search logs"
         )
@@ -158,6 +164,7 @@ def update_log(log_id: int, log_update: LogUpdate, db: Session = Depends(get_db)
     try:
         log = LogService.update_log(db, log_id, log_update)
         if log is None:
+            logger.warning(f"Log not found: {log_id}")
             return APIResponse(
                 data=None,
                 code=404,
@@ -165,10 +172,12 @@ def update_log(log_id: int, log_update: LogUpdate, db: Session = Depends(get_db)
                 message=f"Log with ID {log_id} not found",
             )
         log_schema = LogSchema.model_validate(log)
+        logger.info(f"Log updated: {log_id}")
         return APIResponse(
             data=log_schema, code=200, error=None, message="Log updated successfully"
         )
     except Exception as e:
+        logger.error(f"Failed to update log {log_id}: {str(e)}")
         return APIResponse(
             data=None, code=500, error=str(e), message="Failed to update log"
         )
@@ -179,16 +188,19 @@ def delete_log(log_id: int, db: Session = Depends(get_db)):
     try:
         success = LogService.delete_log(db, log_id)
         if not success:
+            logger.warning(f"Log not found for deletion: {log_id}")
             return APIResponse(
                 data=None,
                 code=404,
                 error="Log not found",
                 message=f"Log with ID {log_id} not found",
             )
+        logger.info(f"Log deleted: {log_id}")
         return APIResponse(
             data=None, code=200, error=None, message="Log deleted successfully"
         )
     except Exception as e:
+        logger.error(f"Failed to delete log {log_id}: {str(e)}")
         return APIResponse(
             data=None, code=500, error=str(e), message="Failed to delete log"
         )

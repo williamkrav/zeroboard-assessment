@@ -1,17 +1,21 @@
 # Logs Dashboard
 
+## This repo consist of
+
+- **Backend**:
+My backend Python application using FastAPI framework because it is simple and fast framework to build a simple application like this assessment.
+I use PostgreSQL as database because its ACID property helps the application more stable, and put it into dockerfile to make it easier to use and test in any computer
+I use SQLAlchemy as ORM to make SQL query simpler and Alembic as migration tool to make the migration process easier and can be up and down anytime
+
+- **Frontend**:
+My frontend Javascript application using ReactJS framework to make it easier to create dynamic webpage, handle re-render and modularization
+I use ANTD component library because it is simple, clean, and easy to use
 
 ## Requirements
 - Python 3.12.0
 - Node.js 22.14.0
 - Docker (for PostgreSQL)
 A simple web application for managing and analyzing logs with FastAPI backend and React frontend.
-
-## What is this?
-
-- **Backend**: FastAPI with PostgreSQL database
-- **Frontend**: React with Ant Design components
-- **Features**: CRUD operations, log search, analytics dashboard
 
 ## How to run
 
