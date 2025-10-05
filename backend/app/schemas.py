@@ -59,3 +59,4 @@ class LogStats(BaseModel):
     total_logs: int
     level_counts: dict
     source_counts: dict
+    daily_distribution: dict

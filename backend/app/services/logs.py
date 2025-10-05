@@ -103,16 +103,33 @@ class LogService:
 
         total_logs = query.count()
 
-        level_counts = db.query(Log.level, func.count(Log.id)).group_by(Log.level).all()
+        level_counts = (
+            query.with_entities(Log.level, func.count(Log.id)).group_by(Log.level).all()
+        )
         level_counts = {level: count for level, count in level_counts}
 
         source_counts = (
-            db.query(Log.source, func.count(Log.id)).group_by(Log.source).all()
+            query.with_entities(Log.source, func.count(Log.id))
+            .group_by(Log.source)
+            .all()
         )
         source_counts = {source: count for source, count in source_counts if source}
+
+        daily_distribution = (
+            db.query(
+                func.date(Log.timestamp).label("date"),
+                func.count(Log.id).label("count"),
+            )
+            .filter(and_(*filters) if filters else True)
+            .group_by(func.date(Log.timestamp))
+            .order_by(func.date(Log.timestamp))
+            .all()
+        )
+        daily_distribution = {str(date): count for date, count in daily_distribution}
 
         return LogStats(
             total_logs=total_logs,
             level_counts=level_counts,
             source_counts=source_counts,
+            daily_distribution=daily_distribution,
         )
