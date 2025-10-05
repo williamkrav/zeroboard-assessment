@@ -8,6 +8,7 @@ import { LOG_LEVEL_OPTIONS, LOG_SOURCE_OPTIONS } from '../constants';
 import DailyDistributionChart from '../components/DailyDistributionChart';
 import LogStatistics from '../components/LogStatistics';
 import LogLevelDonutChart from '../components/LogLevelDonutChart';
+import PieChart from '../components/PieChart';
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -150,6 +151,7 @@ const Dashboard = () => {
         <>
           <LogStatistics stats={stats} />
           <LogLevelDonutChart data={stats.level_counts} />
+          <PieChart data={stats.source_counts} />
           <DailyDistributionChart data={stats.daily_distribution} />
         </>
       )}
