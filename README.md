@@ -2,14 +2,14 @@
 
 ## This repo consist of
 
-- **Backend**:
-My backend Python application using FastAPI framework because it is simple and fast framework to build a simple application like this assessment.
-I use PostgreSQL as database because its ACID property helps the application more stable, and put it into dockerfile to make it easier to use and test in any computer
-I use SQLAlchemy as ORM to make SQL query simpler and Alembic as migration tool to make the migration process easier and can be up and down anytime
+### **Backend**:
+- My backend Python application using FastAPI framework because it is simple and fast framework to build a simple application like this assessment.
+- I use PostgreSQL as database because its ACID property helps the application more stable, and put it into dockerfile to make it easier to use and test in any computer
+- I use SQLAlchemy as ORM to make SQL query simpler and Alembic as migration tool to make the migration process easier and can be up and down anytime
 
-- **Frontend**:
-My frontend Javascript application using ReactJS framework to make it easier to create dynamic webpage, handle re-render and modularization
-I use ANTD component library because it is simple, clean, and easy to use
+### **Frontend**:
+- My frontend Javascript application using ReactJS framework to make it easier to create dynamic webpage, handle re-render and modularization
+- I use ANTD component library because it is simple, clean, and easy to use
 
 ## Requirements
 - Python 3.12.0
@@ -43,7 +43,8 @@ make run-frontend
 ```
 
 ## API docs
-API documentation can be found in the postman collection to make it easier for testing the API
+- Swagger: http://localhost:8000/docs
+- I also have put postman collection to make it easier for testing the API
 
 ## Run Unit Test
 ```bash
