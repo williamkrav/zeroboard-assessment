@@ -80,7 +80,7 @@ const Dashboard = () => {
           layout="vertical"
           onFinish={handleSearch}
           initialValues={{
-            dateRange: [dayjs().subtract(1, 'day'), dayjs()],
+            dateRange: [dayjs().subtract(1, 'month'), dayjs()],
           }}
         >
           <Row gutter={16}>
