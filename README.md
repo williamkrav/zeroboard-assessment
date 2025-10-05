@@ -41,10 +41,13 @@ make run-frontend
 ## API docs
 API documentation can be found in the postman collection to make it easier for testing the API
 
-## Test
+## Run Unit Test
 ```bash
 # Run backend test
 make test
+
+# Run frontend test
+make test-frontend
 ```
 
 ## Important commands

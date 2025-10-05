@@ -1,4 +1,4 @@
-.PHONY: setup-versions install run run-frontend migrate-up migrate-down db-start db-stop lint format check setup-hooks test
+.PHONY: setup-versions install run run-frontend migrate-up migrate-down db-start db-stop lint format check setup-hooks test test-frontend
 
 setup-versions:
 	cd backend && pyenv local
@@ -44,3 +44,6 @@ setup-hooks:
 
 test:
 	cd backend && python -m pytest tests/ -v
+
+test-frontend:
+	cd frontend && CI=true npm test
