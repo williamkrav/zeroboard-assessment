@@ -77,6 +77,30 @@ const Home = () => {
     setPageSize(pagination.pageSize);
   };
 
+  const handleDownloadCSV = () => {
+    if (!logs || logs.length === 0) return;
+
+    const csvRows = [];
+    csvRows.push('Level,Message,Source,Timestamp');
+
+    logs.forEach((log) => {
+      const message = log.message.replace(/"/g, '""');
+      const timestamp = new Date(log.timestamp).toISOString();
+      csvRows.push(`"${log.level}","${message}","${log.source}","${timestamp}"`);
+    });
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'logs.csv';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  };
+
   const columns = [
     {
       title: 'Level',
@@ -139,6 +163,9 @@ const Home = () => {
       >
         <h1 style={{ margin: 0 }}>Logs Dashboard</h1>
         <div>
+          <Button onClick={handleDownloadCSV} style={{ marginRight: '10px' }}>
+            Download as CSV
+          </Button>
           <Button
             onClick={() => navigate('/dashboard')}
             style={{ marginRight: '10px' }}
